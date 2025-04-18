@@ -113,6 +113,10 @@ app.layout = dbc.Container(
                             dbc.Col(dcc.Graph(id='output-iv-chart'), width=6),
                             dbc.Col(dcc.Graph(id='output-chart'), width=6)
                         ], className='mt-4'),
+                        html.P(
+                            "Here the premium changes collapse, however in practice, real skews and vol-smile dynamics would make premium changes diverge.",
+                            style={'fontStyle': 'italic', 'marginTop': '0.5rem'}
+                        ),
                         dbc.Row([
                             dbc.Col(dcc.Graph(id='price-comp-chart', figure={}), width=6),
                             dbc.Col(dcc.Graph(id='straddle-payoff-chart', figure={}), width=6)
@@ -185,13 +189,13 @@ def update_dashboard(n_clicks, s0, ann_vol, r, q,
     fig_prem = go.Figure(go.Bar(x=df_prem['Option'], y=df_prem['PctChange'], marker_color=SECONDARY))
     fig_prem.update_layout(title='Premium % Change (Post vs. Pre)', template='plotly_white')
 
-    # New Chart: Forward vs Straddle Price
+    # Forward vs Straddle Price
     fig_price_comp = go.Figure()
     fig_price_comp.add_trace(go.Bar(x=df_sum['Scenario'], y=[float(x) for x in df_sum['Forward Price']], name='Forward Price', marker_color=PRIMARY))
     fig_price_comp.add_trace(go.Bar(x=df_sum['Scenario'], y=[float(x) for x in df_sum['Straddle Price']], name='Straddle Price', marker_color=SECONDARY))
     fig_price_comp.update_layout(barmode='group', title='Forward vs Straddle Price', template='plotly_white')
 
-    # New Chart: Straddle Payoff Diagram
+    # Straddle Payoff Diagram
     S_range = np.linspace(float(s0)*0.5, float(s0)*1.5, 100)
     payoff = np.abs(S_range - float(s0))
     fig_payoff = go.Figure(go.Scatter(x=S_range, y=payoff, mode='lines', line={'color': SECONDARY}))
