@@ -115,7 +115,7 @@ class EventPricing:
     
     def price_scenario(self, S: float) -> dict:
         """
-        Price ATM straddle and 25-delta wings at spot S.
+        Price ATM straddle and target-delta wings at spot S.
         Returns a dictionary with forward, straddle, put strike, put price, call strike, call price.
         """
         bs = BlackScholes(S, S, self.T, self.r, self.q)
@@ -153,14 +153,19 @@ class EventPricing:
         Returns a DataFrame with index Option and columns ['Pre','Post'] giving
         the implied vols (%), *inverted* from the prices (including ATM straddle).
         """
+        # build a dynamic label based on target_delta
+        delta_pct = int(self.target_delta * 100)
+        delta_label = f"{delta_pct}Δ"
+
         # get pre and post scenario data
         pre = self.price_scenario(self.S0)
         post = self.price_scenario(self.drifted_forward())
+
         # define options list
         options = [
             ("ATM Straddle", self.S0, self.S0, pre['straddle'], post['straddle'], True),
-            ("25Δ Put",       self.S0, pre['put_strike'],  pre['put_price'],  post['put_price'],  False),
-            ("25Δ Call",      self.S0, pre['call_strike'], pre['call_price'], post['call_price'], True),
+            (f"{delta_label} Put", self.S0, pre['put_strike'], pre['put_price'], post['put_price'], False),
+            (f"{delta_label} Call", self.S0, pre['call_strike'], pre['call_price'], post['call_price'], True),
         ]
         rows = []
         for name, S, K, p_pre, p_post, is_call in options:
@@ -178,14 +183,18 @@ class EventPricing:
     def premium_pct_change(self):
         """
         Returns a DataFrame with columns ['Option','Pre','Post','PctChange'] for
-        ATM Straddle, 25Δ Put, 25Δ Call.
+        ATM Straddle, target-delta Put, target-delta Call.
         """
+        # build a dynamic label based on target_delta
+        delta_pct = int(self.target_delta * 100)
+        delta_label = f"{delta_pct}Δ"
+
         df = self.summary().set_index('Scenario')
         pre, post = df.loc['Pre'], df.loc['Post']
         out = []
         for name, col in [('ATM Straddle','straddle'),
-                          ('25Δ Put','put_price'),
-                          ('25Δ Call','call_price')]:
+                          (f'{delta_label} Put','put_price'),
+                          (f'{delta_label} Call','call_price')]:
             pct = (post[col] - pre[col]) / pre[col] * 100
             out.append({
                 'Option': name,
