@@ -1,10 +1,10 @@
 from dash import Dash, html
 import dash_bootstrap_components as dbc
-from callbacks.event_pricing_callbacks import register_event_pricing_callbacks
-from callbacks.hedging_callbacks import register_hedging_callbacks
-from callbacks.navigation_callbacks import register_navigation_callbacks
-from config import PRIMARY, SECONDARY, BACKGROUND
-from utils.data_loader import load_positions
+from .callbacks.event_pricing_callbacks import register_event_pricing_callbacks
+from .callbacks.hedging_callbacks import register_hedging_callbacks
+from .callbacks.navigation_callbacks import register_navigation_callbacks
+from .config import PRIMARY, SECONDARY, BACKGROUND
+from .utils.data_loader import load_positions
 
 
 def generate_layout():
