@@ -18,7 +18,6 @@ def hedging_layout(positions):
                     dcc.Dropdown(
                         id='mkt-dropdown',
                         options=[{'label': m,'value': m} for m in ['US', 'EU', 'HK', 'AU', 'IN', 'JP']],
-                        # value='US',
                         placeholder='Select Market'
                     ),
                 ], width=1
