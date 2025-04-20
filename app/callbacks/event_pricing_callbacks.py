@@ -1,8 +1,8 @@
 from dash import Input, Output, no_update
 import numpy as np
 import plotly.graph_objects as go
-from event_pricing import EventPricing
-from config import PRIMARY, SECONDARY, BACKGROUND
+from ..event_pricing import EventPricing
+from ..config import PRIMARY, SECONDARY, BACKGROUND
 
 
 def register_event_pricing_callbacks(app):

@@ -1,9 +1,9 @@
 from dash import Input, Output, State, callback_context, html
-from layouts.event_pricing_layout import event_pricing_layout
-from layouts.hedging_layout import hedging_layout
-from layouts.event_pricing_layout import event_pricing_layout
-from layouts.hedging_layout import hedging_layout
-from layouts.pnl_analytics_layout import pnl_analytics_layout
+from ..layouts.event_pricing_layout import event_pricing_layout
+from ..layouts.hedging_layout import hedging_layout
+from ..layouts.event_pricing_layout import event_pricing_layout
+from ..layouts.hedging_layout import hedging_layout
+from ..layouts.pnl_analytics_layout import pnl_analytics_layout
 
 
 def register_navigation_callbacks(app, positions):
