@@ -25,10 +25,15 @@ def generate_positions(n: int = 30):
     sampled['Book'] = np.random.choice(books, size=n)
     sampled['Market'] = np.random.choice(markets, size=n)
 
-    # Generate randome Spot and Gamma$ with thresholds
+    # Generate randome Spot capped between 1 and 200, rounded to 2 decimals
     sampled['Spot'] = np.random.uniform(1, 200, size=n).round(2)
+
+    # Generate random Gamma$ with magnitude between min and max, random sign
     min_delta = 500_000
-    sampled['Delta$'] = np.random.randint(min_delta, size=n)
+    max_delta = 12_000_000
+    raw_deltas = np.random.randint(min_delta, max_delta + 1, size=n)
+    signs = np.random.choice([-1, 1], size=n)
+    sampled['Delta$'] = (raw_deltas * signs)
 
     # Parse Spot % Move as decimal
     sampled['Spot Pct Move'] = (sampled['Spot % Move'].str.rstrip('%').astype(float) / 100)
