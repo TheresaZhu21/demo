@@ -53,3 +53,11 @@ class BlackScholes:
         """Invert BS price to find implied volatility via Brent root-find."""
         f = lambda vol: BlackScholes.calc_price(S, K, T, r, q, vol, call) - price
         return brentq(f, 1e-6, 5.0)
+    
+    @staticmethod
+    def find_straddle_ivol(straddle_price: float, S: float, K: float, T: float, r: float, q: float) -> float:
+        """Invert BS price to find implied volatility for straddle via Brent root-find."""
+        f = lambda vol: (BlackScholes.calc_price(S, K, T, r, q, vol, call=True)
+                         + BlackScholes.calc_price(S, K, T, r, q, vol, call=False)
+                         - straddle_price)
+        return brentq(f, 1e-6, 5.0)

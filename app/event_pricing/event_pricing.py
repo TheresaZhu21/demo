@@ -80,9 +80,13 @@ class EventPricing:
             (f"{label} Put", self.S0, pre['put_strike'], post['put_strike'], pre['put_price'], post['put_price'], False),
             (f"{label} Call", self.S0, pre['call_strike'], post['call_strike'], pre['call_price'], post['call_price'], True)
         ]:
-            iv_pre = BlackScholes.find_ivol(price_pre, S, K_pre, self.T, self.r, self.q, call=is_call) * 100
-            iv_post = BlackScholes.find_ivol(price_post, S, K_post, self.T, self.r, self.q, call=is_call) * 100
-            pct = (iv_post - iv_pre) / iv_pre * 100
+            if name == "ATM Straddle":
+                iv_pre = BlackScholes.find_straddle_ivol(price_pre, S, K_pre, self.T, self.r, self.q) * 100
+                iv_post = BlackScholes.find_straddle_ivol(price_post, S, K_post, self.T, self.r, self.q) * 100
+            else:
+                iv_pre = BlackScholes.find_ivol(price_pre, S, K_pre, self.T, self.r, self.q, call=is_call) * 100
+                iv_post = BlackScholes.find_ivol(price_post, S, K_post, self.T, self.r, self.q, call=is_call) * 100
+            pct = (iv_post - iv_pre) / iv_pre * 100 if iv_pre else float('nan')
             rows.append({'Option': name, 'IV Pre (%)': iv_pre, 'IV Post (%)': iv_post, '% Change': pct})
         return pd.DataFrame(rows)
 
