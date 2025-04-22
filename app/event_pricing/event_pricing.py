@@ -75,13 +75,13 @@ class EventPricing:
         pre = self.price_scenario(self.S0)
         post = self.price_scenario(self.drifted_forward())
         rows = []
-        for name, S, K, p_pre, p_post, is_call in [
-            ("ATM Straddle", self.S0, self.S0, pre['straddle'], post['straddle'], True),
-            (f"{label} Put", self.S0, pre['put_strike'], pre['put_price'], post['put_price'], False),
-            (f"{label} Call", self.S0, pre['call_strike'], pre['call_price'], post['call_price'], True)
+        for name, S, K_pre, K_post, price_pre, price_post, is_call in [
+            ("ATM Straddle", self.S0, self.S0, self.S0, pre['straddle'], post['straddle'], True),
+            (f"{label} Put", self.S0, pre['put_strike'], post['put_strike'], pre['put_price'], post['put_price'], False),
+            (f"{label} Call", self.S0, pre['call_strike'], post['call_strike'], pre['call_price'], post['call_price'], True)
         ]:
-            iv_pre = BlackScholes.find_ivol(p_pre, S, K, self.T, self.r, self.q, call=is_call) * 100
-            iv_post = BlackScholes.find_ivol(p_post, S, K, self.T, self.r, self.q, call=is_call) * 100
+            iv_pre = BlackScholes.find_ivol(price_pre, S, K_pre, self.T, self.r, self.q, call=is_call) * 100
+            iv_post = BlackScholes.find_ivol(price_post, S, K_post, self.T, self.r, self.q, call=is_call) * 100
             pct = (iv_post - iv_pre) / iv_pre * 100
             rows.append({'Option': name, 'IV Pre (%)': iv_pre, 'IV Post (%)': iv_post, '% Change': pct})
         return pd.DataFrame(rows)
@@ -96,3 +96,53 @@ class EventPricing:
             pct = (post[col] - pre[col]) / pre[col] * 100
             out.append({'Option': name, 'Pre': pre[col], 'Post': post[col], 'PctChange': pct})
         return pd.DataFrame(out)
+    
+    def skew(self):
+        moneyness = np.linspace(0.75, 1.25, 50) # strikes from 75% to 125% of spot
+        strikes = moneyness * self.S0
+        u, d = self.jump_factors()
+        ivs_pre, ivs_post = [], []
+
+        for K in strikes:
+            # pre: flat BS
+            price_pre = BlackScholes.calc_price(self.S0, K, self.T, self.r, self.q, self.eff_vol, call=True)
+            try:
+                iv_pre = BlackScholes.find_ivol(price_pre, self.S0, K, self.T, self.r, self.q, call=True) * 100
+            except Exception:
+                iv_pre = np.nan
+            ivs_pre.append(iv_pre)
+
+            # post: 
+            S = self.drifted_forward() # drifted forward
+            # is_call = (K >= S)
+            is_call = True
+            price_post = BlackScholes(S, K, self.T, self.r, self.q).price(self.eff_vol, call=is_call)
+            try:
+                iv_post = BlackScholes.find_ivol(price_post, self.S0, K, self.T, self.r, self.q, call=is_call) * 100
+            except Exception:
+                iv_post = np.nan
+            ivs_post.append(iv_post)
+        return (moneyness, ivs_pre, ivs_post)
+    
+    def pdf(self):
+        moneyness, ivs_pre, ivs_post = self.skew()
+        strikes = np.array(moneyness) * self.S0
+        F = self.forward_price()
+        pdf_implied, pdf_lognormal = [], []
+        for K, iv_post_pct in zip(strikes, ivs_post):
+            # Implied risk-neutral density via lognormal at moneyness
+            sigma_imp = iv_post_pct / 100.0
+            mu_imp = np.log(F) - 0.5 * sigma_imp**2 * self.T
+            pdf_implied.append(
+                1 / (K * sigma_imp * np.sqrt(2 * np.pi * self.T)) *
+                np.exp(- (np.log(K) - mu_imp)**2 / (2 * sigma_imp**2 * self.T))
+            )
+
+            # Baseline lognormal from effective volatility
+            sigma_ln = self.eff_vol
+            mu_ln = np.log(F) - 0.5 * sigma_ln**2 * self.T
+            pdf_lognormal.append(
+                1 / (K * sigma_ln * np.sqrt(2 * np.pi * self.T)) *
+                np.exp(- (np.log(K) - mu_ln)**2 / (2 * sigma_ln**2 * self.T))
+            )
+        return (strikes, pdf_implied, pdf_lognormal)

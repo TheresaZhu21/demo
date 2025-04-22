@@ -67,14 +67,23 @@ def event_pricing_layout():
                 ),
                 # Row 1 of charts
                 dbc.Row([
-                    dbc.Col(dcc.Graph(id='output-iv-chart', style={'width':'90%','aspectRatio':'3/2'}), width=6),
-                    dbc.Col(dcc.Graph(id='output-chart', style={'width':'90%','aspectRatio':'3/2'}), width=6)
+                    dbc.Col(dcc.Graph(id='output-iv-chart', style={'width':'100%','aspectRatio':'4/3'}), width=4),
+                    dbc.Col(dcc.Graph(id='output-price-comp-chart', figure={}, style={'width':'100%','aspectRatio':'4/3'}), width=4),
+                    dbc.Col([
+                        dcc.Graph(id='output-premium-chart', style={'width':'100%','aspectRatio':'4/3'}), 
+                        html.P("* Here the premium change collapse. In practice, vol-smile dynamics would make it diverge.", style={'fontStyle': 'italic', 'marginTop': '0rem'}),
+                    ],width=4),
                 ], className='mb-4'),
                 # Row 2 of charts
                 dbc.Row([
-                    dbc.Col(dcc.Graph(id='price-comp-chart', figure={}, style={'width':'90%','aspectRatio':'3/2'}), width=6),
-                    dbc.Col(dcc.Graph(id='straddle-payoff-chart', figure={}, style={'width':'90%','aspectRatio':'3/2'}), width=6)
-                ], className='mb-4')
+                    dbc.Col(dcc.Graph(id='output-skew-chart', figure={}, style={'width':'100%','aspectRatio':'4/3'}), width=4),
+                    dbc.Col([
+                        dcc.Graph(id='output-distribution-chart', figure={}, style={'width':'100%','aspectRatio':'4/3'}),
+                        html.P("* Heavier left tail -> elevated put vols; thiner right tail -> depressed call vols, ", style={'fontStyle': 'italic', 'marginTop': '0rem', 'marginBottom': '0rem'}),
+                        html.P("exactly as seen in the skew chart on the left.", style={'fontStyle': 'italic', 'marginTop': '0rem'}),
+                    ], width=4),
+                    dbc.Col(dcc.Graph(id='output-straddle-payoff-chart', figure={}, style={'width':'100%','aspectRatio':'4/3'}), width=4),
+                ], className='mb-4'),
             ], width=10)
         ])
     ])
