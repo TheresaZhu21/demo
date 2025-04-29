@@ -5,7 +5,10 @@ from .callbacks.hedging_callbacks import register_hedging_callbacks
 from .callbacks.navigation_callbacks import register_navigation_callbacks
 from .config import PRIMARY, SECONDARY, BACKGROUND
 from .utils.data_loader import load_positions
+from .utils.log_config import setup_logging
 
+
+setup_logging()
 
 def generate_layout():
     header = html.Div([
