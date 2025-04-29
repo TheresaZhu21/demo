@@ -1,7 +1,6 @@
 from dash import Input, Output, no_update
 import numpy as np
 import plotly.graph_objects as go
-from ..event_pricing import BlackScholes
 from ..event_pricing import EventPricing
 from ..config import PRIMARY, SECONDARY, BACKGROUND
 

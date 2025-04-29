@@ -49,32 +49,34 @@ An extensible, modular Plotly Dash application for:
 ├── .gitignore
 ├── README.md
 ├── requirements.txt
-├── data/
-│   └── positions.parquet       # Generated sample hedging data
-│   └── generate_positions.py   # Script to create the Parquet file
-├── app/
+├── data/                              # Data files and generators
+│   ├── positions.parquet              # Sample hedging dataset
+│   ├── generate_pnl.py                # Script to simulate random PnL data
+│   └── generate_positions.py          # Script to simulate random positions
+├── app/                               # Main application package
 │   ├── __init__.py
-│   ├── config.py               # Shared color & style constants
-│   ├── run.py                  # App entrypoint & callback registration
-│   ├── utils/
+│   ├── config.py                      # Centralized configuration (colors, settings)
+│   ├── run.py                         # App entrypoint (initialize Dash app & register callbacks)
+│   ├── utils/                         # Utility functions
 │   │   ├── __init__.py
-│   │   └── data_loader.py      # load_positions()
-│   ├── layouts/
+│   │   └── data_loader.py             # load_positions(), load_pnl_data(), etc.
+│   ├── layouts/                       # Dash layouts
 │   │   ├── __init__.py
 │   │   ├── event_pricing_layout.py
 │   │   ├── hedging_layout.py
 │   │   └── pnl_analytics_layout.py
-│   ├── callbacks/
+│   ├── callbacks/                     # Dash callbacks (business logic connecting UI & core)
 │   │   ├── __init__.py
 │   │   ├── event_pricing_callbacks.py
 │   │   ├── hedging_callbacks.py
 │   │   └── navigation_callbacks.py
-│   └── event_pricing/
+│   └── event_pricing/                 # Core app logic and services: event pricing
 │       ├── __init__.py
-│       ├── black_scholes.py
-│       └── event_pricing.py
-└── tests/
-    └── test_event_pricing.py    # Unit tests
+│       ├── black_scholes.py           # Black-Scholes formulas
+│       └── event_pricing.py           # Event pricing engine
+└── tests/                             # Unit and integration tests
+    ├── test_event_pricing.py          # Unit tests for event pricing core logic
+    └── test_positions_parquet.py      # Unit tests for position generator
 ```
 
 ---
