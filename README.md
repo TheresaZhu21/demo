@@ -3,11 +3,11 @@
 **Author:** Theresa Zhu  
 **Date:** April 17, 2025
 
-An extensible, modular Plotly Dash application for:
+An extensible, modular demo Plotly Dash application for reserch and trading, featuring:
 
-- **Event Pricing**: compute pre‑ and post‑announcement option prices, implied volatility shifts, and payoff diagrams
-- **Hedging Orders**: generate and export delta‑hedging trade orders
-- **PnL Analytics**: placeholder for future risk and analytics tools
+- **Event Pricing**: compute pre‑ and post‑announcement option prices, implied volatility shifts, skew, PDF, etc.
+- **Hedging Orders**: generate and export delta‑hedging trade orders.
+- **PnL Analytics**: monitor and evaluate historical PnL trends and correlations.
 
 ---
 
@@ -35,11 +35,21 @@ An extensible, modular Plotly Dash application for:
    python data/generate_positions.py
    ```
 
-4. **Run the app**  
+4. **Run the app (local)**  
    ```bash
    python -m app.run
    ```
    Open your browser at `http://localhost:8050`.
+
+5. **Run the app (online)**  
+   Open your browser at `https://demo-vehj.onrender.com/`.
+
+6. **Run Tests**  
+   To run unit tests:
+   ```bash
+   pytest tests/
+   ```
+   Make sure you have `pytest` installed (`pip install pytest`).
 
 ---
 
@@ -88,11 +98,6 @@ An extensible, modular Plotly Dash application for:
 - **Core Logic**: extend pricing or analytics classes under `app/event_pricing/`
 - **Config**: adjust shared constants in `app/config.py`
 - **Data**: manage input datasets in `data/`, load via `app/utils/data_loader.py`
-
-To run tests:
-```bash
-pytest
-```
 
 ---
 
