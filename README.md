@@ -63,12 +63,15 @@ An extensible, modular demo Plotly Dash application for reserch and trading, f
 │   ├── positions.parquet              # Sample hedging dataset
 │   ├── generate_pnl.py                # Script to simulate random PnL data
 │   └── generate_positions.py          # Script to simulate random positions
+├── logs/                              
+│   ├── app.log
 ├── app/                               # Main application package
 │   ├── __init__.py
 │   ├── config.py                      # Centralized configuration (colors, settings)
 │   ├── run.py                         # App entrypoint (initialize Dash app & register callbacks)
 │   ├── utils/                         # Utility functions
 │   │   ├── __init__.py
+│   │   ├── log_config.py              # logging setup logic
 │   │   └── data_loader.py             # load_positions(), load_pnl_data(), etc.
 │   ├── layouts/                       # Dash layouts
 │   │   ├── __init__.py
