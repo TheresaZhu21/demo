@@ -6,3 +6,4 @@ plotly
 scipy
 gunicorn
 pyarrow
+logging
