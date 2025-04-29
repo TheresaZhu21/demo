@@ -8,7 +8,7 @@ def get_pnl_path():
 
 def generate_pnl(n: int = 10000):
     """
-    Generate a random PnL DataFrame spanning the past 1000 days.
+    Generate a random PnL DataFrame spanning the past 1000 days
     """
     # Date range: past 1000 days up to today
     end_date = pd.Timestamp.today().normalize()
